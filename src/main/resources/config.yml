@@ -1,6 +1,20 @@
 # MiniGamesWR Configuration
 # Wild Rose MC - Minigames Server
 
+# Void world generator settings.
+# Set enabled: true and configure world-name to match the world that should
+# be generated as void.  The generator must also be referenced in
+# bukkit.yml (generator: MiniGamesWR) for the target world.
+void-generator:
+  enabled: false
+  world-name: world
+  spawn-platform:
+    enabled: true
+    # Produces exactly size×size blocks centred around the hub spawn.
+    # Example: size: 4 → 4×4 = 16 blocks placed.
+    size: 5
+    material: STONE
+
 # Hub spawn location
 hub:
   world: world
