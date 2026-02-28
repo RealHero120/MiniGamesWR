@@ -1,0 +1,19 @@
+name: MiniGamesWR
+version: '${project.version}'
+main: com.wildrose.minigameswr.MiniGamesWR
+api-version: '1.21'
+description: Wild Rose MC Mini-Games plugin with void world support
+authors: [ RealHero120 ]
+website: mc1.wildrose.com
+
+commands:
+  mg:
+    description: MiniGamesWR admin commands
+    usage: /mg <platform regen|voidplatform>
+    permission: minigameswr.admin
+    permission-message: "§cYou don't have permission to use this command."
+
+permissions:
+  minigameswr.admin:
+    description: Access to MiniGamesWR admin commands
+    default: op

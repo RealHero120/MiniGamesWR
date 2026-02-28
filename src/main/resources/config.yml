@@ -1,0 +1,55 @@
+# =====================================================================
+#  MiniGamesWR Configuration
+#  Wild Rose MC  –  mc1.wildrose.com
+# =====================================================================
+
+# -----------------------------------------------------------------
+#  Void World Generator
+#
+#  When enabled, this plugin acts as the chunk generator for the
+#  configured world (see bukkit.yml setup below).  All chunks are
+#  generated as air – no terrain, caves, structures or mobs.
+#
+#  One-time server setup (do this once, then restart):
+#    1. Stop the server.
+#    2. Back up (or delete) the existing world folder, e.g.
+#         C:\Minecraft\minigames\world
+#    3. In bukkit.yml add:
+#         worlds:
+#           world:
+#             generator: MiniGamesWR
+#    4. Start the server – a fresh void world is created.
+#
+#  Best practice: set a world border to limit void chunk generation.
+#    /worldborder center 0 0
+#    /worldborder set 1000
+# -----------------------------------------------------------------
+void-generator:
+  # Master switch for the void chunk generator.
+  enabled: true
+
+  # The world folder name to apply the generator to.
+  world-name: world
+
+  # -----------------------------------------------------------
+  #  Spawn Safety Platform
+  #
+  #  A small solid platform placed at world spawn so players do
+  #  not fall into the void immediately on join.
+  #  Run  /mg platform regen  at any time to recreate it.
+  # -----------------------------------------------------------
+  spawn-platform:
+    # Whether to automatically place the platform on world load.
+    enabled: true
+
+    # Platform dimensions: size × size blocks (NxN square).
+    size: 3
+
+    # Block material for the platform.
+    # Must be a valid Bukkit Material name (e.g. GLASS, STONE, OAK_PLANKS).
+    material: GLASS
+
+    # Y coordinate at which to place the platform blocks.
+    # Use -1 to automatically place it one block below the world
+    # spawn Y coordinate (recommended for most void worlds).
+    y: -1
