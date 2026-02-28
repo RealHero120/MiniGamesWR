@@ -6,6 +6,8 @@ import com.wildrose.minigameswr.duels.DuelsListener;
 import com.wildrose.minigameswr.duels.DuelsManager;
 import com.wildrose.minigameswr.gui.MinigamesGUI;
 import com.wildrose.minigameswr.hub.HubListener;
+import com.wildrose.minigameswr.spleef.SpleefListener;
+import com.wildrose.minigameswr.spleef.SpleefManager;
 import com.wildrose.minigameswr.spliff.SpliffListener;
 import com.wildrose.minigameswr.spliff.SpliffManager;
 import org.bukkit.World;
@@ -18,6 +20,7 @@ public final class MiniGamesWR extends JavaPlugin {
     private ConfigManager configManager;
     private DuelsManager duelsManager;
     private SpliffManager spliffManager;
+    private SpleefManager spleefManager;
     private MinigamesGUI minigamesGUI;
 
     @Override
@@ -27,12 +30,14 @@ public final class MiniGamesWR extends JavaPlugin {
         configManager = new ConfigManager(this);
         duelsManager = new DuelsManager(this);
         spliffManager = new SpliffManager(this);
+        spleefManager = new SpleefManager(this);
         minigamesGUI = new MinigamesGUI(this);
 
         SpawnPlatformListener spawnPlatformListener = new SpawnPlatformListener(this);
         getServer().getPluginManager().registerEvents(new HubListener(this), this);
         getServer().getPluginManager().registerEvents(new DuelsListener(this), this);
         getServer().getPluginManager().registerEvents(new SpliffListener(this), this);
+        getServer().getPluginManager().registerEvents(new SpleefListener(this), this);
         getServer().getPluginManager().registerEvents(minigamesGUI, this);
         getServer().getPluginManager().registerEvents(spawnPlatformListener, this);
 
@@ -59,6 +64,7 @@ public final class MiniGamesWR extends JavaPlugin {
     public void onDisable() {
         if (duelsManager != null) duelsManager.shutdown();
         if (spliffManager != null) spliffManager.shutdown();
+        if (spleefManager != null) spleefManager.shutdown();
         getLogger().info("MiniGamesWR disabled.");
     }
 
@@ -90,5 +96,6 @@ public final class MiniGamesWR extends JavaPlugin {
     public ConfigManager getConfigManager() { return configManager; }
     public DuelsManager getDuelsManager() { return duelsManager; }
     public SpliffManager getSpliffManager() { return spliffManager; }
+    public SpleefManager getSpleefManager() { return spleefManager; }
     public MinigamesGUI getMinigamesGUI() { return minigamesGUI; }
 }

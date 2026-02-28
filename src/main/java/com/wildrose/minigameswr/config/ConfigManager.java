@@ -1,6 +1,7 @@
 package com.wildrose.minigameswr.config;
 
 import com.wildrose.minigameswr.MiniGamesWR;
+import com.wildrose.minigameswr.spleef.SpleefArena;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -160,6 +161,107 @@ public class ConfigManager {
         cfg().set(key + ".y", loc.getBlockY());
         cfg().set(key + ".z", loc.getBlockZ());
         cfg().set("spliff.world", loc.getWorld().getName());
+        plugin.saveConfig();
+    }
+
+    // ---- Spleef arenas ----
+
+    /**
+     * Load all Spleef arenas stored under {@code spleef.arenas.*} in config.yml.
+     * Returns a list of arenas with their configuration populated; snapshots must
+     * be loaded separately by the caller.
+     */
+    public List<SpleefArena> loadSpleefArenas() {
+        List<SpleefArena> result = new ArrayList<>();
+        ConfigurationSection arenasSection = cfg().getConfigurationSection("spleef.arenas");
+        if (arenasSection == null) return result;
+        for (String name : arenasSection.getKeys(false)) {
+            SpleefArena arena = new SpleefArena(name);
+            String world = arenasSection.getString(name + ".world");
+            arena.setWorldName(world);
+
+            // pos1 / pos2
+            if (arenasSection.contains(name + ".pos1")) {
+                double x = arenasSection.getDouble(name + ".pos1.x");
+                double y = arenasSection.getDouble(name + ".pos1.y");
+                double z = arenasSection.getDouble(name + ".pos1.z");
+                arena.setPos1(new Location(Bukkit.getWorld(world != null ? world : "world"), x, y, z));
+            }
+            if (arenasSection.contains(name + ".pos2")) {
+                double x = arenasSection.getDouble(name + ".pos2.x");
+                double y = arenasSection.getDouble(name + ".pos2.y");
+                double z = arenasSection.getDouble(name + ".pos2.z");
+                arena.setPos2(new Location(Bukkit.getWorld(world != null ? world : "world"), x, y, z));
+            }
+
+            // Spawn points
+            List<?> spawns = arenasSection.getList(name + ".spawnpoints");
+            if (spawns != null) {
+                World w = Bukkit.getWorld(world != null ? world : "world");
+                for (Object obj : spawns) {
+                    if (obj instanceof Map<?, ?> map) {
+                        try {
+                            double x = toDouble(map.get("x"));
+                            double y = toDouble(map.get("y"));
+                            double z = toDouble(map.get("z"));
+                            float yaw = (float) toDouble(map.get("yaw"));
+                            float pitch = (float) toDouble(map.get("pitch"));
+                            arena.addSpawnpoint(new Location(w, x, y, z, yaw, pitch));
+                        } catch (Exception ignored) {}
+                    }
+                }
+            }
+
+            // Optional lobby
+            if (arenasSection.contains(name + ".lobby")) {
+                String lobbyWorld = arenasSection.getString(name + ".lobby.world", world != null ? world : "world");
+                double x = arenasSection.getDouble(name + ".lobby.x");
+                double y = arenasSection.getDouble(name + ".lobby.y");
+                double z = arenasSection.getDouble(name + ".lobby.z");
+                float yaw = (float) arenasSection.getDouble(name + ".lobby.yaw");
+                float pitch = (float) arenasSection.getDouble(name + ".lobby.pitch");
+                arena.setLobby(new Location(Bukkit.getWorld(lobbyWorld), x, y, z, yaw, pitch));
+            }
+
+            result.add(arena);
+        }
+        return result;
+    }
+
+    /**
+     * Persist a Spleef arena's current configuration to config.yml (auto-saves).
+     */
+    public void saveSpleefArena(SpleefArena arena) {
+        String base = "spleef.arenas." + arena.getName();
+        if (arena.getWorldName() != null) cfg().set(base + ".world", arena.getWorldName());
+
+        if (arena.getPos1() != null) {
+            cfg().set(base + ".pos1.x", arena.getPos1().getBlockX());
+            cfg().set(base + ".pos1.y", arena.getPos1().getBlockY());
+            cfg().set(base + ".pos1.z", arena.getPos1().getBlockZ());
+        }
+        if (arena.getPos2() != null) {
+            cfg().set(base + ".pos2.x", arena.getPos2().getBlockX());
+            cfg().set(base + ".pos2.y", arena.getPos2().getBlockY());
+            cfg().set(base + ".pos2.z", arena.getPos2().getBlockZ());
+        }
+
+        List<Map<String, Object>> spawns = new ArrayList<>();
+        for (Location loc : arena.getSpawnpoints()) {
+            spawns.add(serializeLoc(loc));
+        }
+        cfg().set(base + ".spawnpoints", spawns);
+
+        if (arena.getLobby() != null) {
+            Location l = arena.getLobby();
+            cfg().set(base + ".lobby.world", l.getWorld() != null ? l.getWorld().getName() : arena.getWorldName());
+            cfg().set(base + ".lobby.x", l.getX());
+            cfg().set(base + ".lobby.y", l.getY());
+            cfg().set(base + ".lobby.z", l.getZ());
+            cfg().set(base + ".lobby.yaw", (double) l.getYaw());
+            cfg().set(base + ".lobby.pitch", (double) l.getPitch());
+        }
+
         plugin.saveConfig();
     }
 
