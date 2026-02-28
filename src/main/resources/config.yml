@@ -72,3 +72,23 @@ spliff:
     z: 20
   # Spawn points (add more with /mg spliff addspawn)
   spawnpoints: []
+
+# Spleef arenas configuration
+# Arenas are created and managed via /mg spleef arena commands.
+# Each named arena stores its own region, spawn points, optional lobby,
+# and references a snapshot file saved in plugins/MiniGamesWR/snapshots/.
+#
+# Example after running the setup commands:
+#
+# spleef:
+#   arenas:
+#     main:
+#       world: world
+#       pos1: {x: -20, y: 63, z: -20}
+#       pos2: {x: 20, y: 63, z: 20}
+#       spawnpoints:
+#         - {x: -5.0, y: 65.0, z: 0.0, yaw: 90.0, pitch: 0.0}
+#         - {x: 5.0, y: 65.0, z: 0.0, yaw: 270.0, pitch: 0.0}
+#       lobby: {world: world, x: 0.5, y: 64.0, z: 0.5, yaw: 0.0, pitch: 0.0}
+spleef:
+  arenas: {}

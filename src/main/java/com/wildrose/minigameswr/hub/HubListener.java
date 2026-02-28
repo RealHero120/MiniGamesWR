@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -45,6 +46,12 @@ public class HubListener implements Listener {
             event.setCancelled(true);
             plugin.getMinigamesGUI().openMenu(player);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        // Remove the opener nether star from death drops so it never spawns as a ground item.
+        event.getDrops().removeIf(MinigamesGUI::isOpenerItem);
     }
 
     @EventHandler

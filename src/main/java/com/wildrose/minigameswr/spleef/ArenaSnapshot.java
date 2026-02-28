@@ -128,7 +128,7 @@ public class ArenaSnapshot {
                 taskHolder[0].cancel();
                 if (onComplete != null) onComplete.run();
             }
-        }, 2L, 1L);
+        }, 2L /* initial delay ticks */, 1L /* period: run every tick */);
         return taskHolder[0];
     }
 }

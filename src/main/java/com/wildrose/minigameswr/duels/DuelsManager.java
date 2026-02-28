@@ -42,6 +42,10 @@ public class DuelsManager {
             player.sendMessage(Component.text("You are already in a Spliff match!", NamedTextColor.RED));
             return;
         }
+        if (plugin.getSpleefManager().isInSpleef(uuid)) {
+            player.sendMessage(Component.text("You are already in a Spleef match!", NamedTextColor.RED));
+            return;
+        }
         if (waitingPlayer != null && waitingPlayer.equals(uuid)) {
             player.sendMessage(Component.text("You are already in the duel queue!", NamedTextColor.YELLOW));
             return;

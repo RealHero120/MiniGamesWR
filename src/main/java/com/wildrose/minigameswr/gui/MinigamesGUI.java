@@ -73,6 +73,19 @@ public class MinigamesGUI implements Listener {
         duels.setItemMeta(duelsMeta);
         inv.setItem(2, duels);
 
+        // Spleef item in slot 4
+        ItemStack spleef = new ItemStack(Material.IRON_SHOVEL);
+        ItemMeta spleefMeta = spleef.getItemMeta();
+        spleefMeta.displayName(Component.text("Spleef", NamedTextColor.AQUA)
+                .decoration(TextDecoration.ITALIC, false));
+        spleefMeta.lore(List.of(
+                Component.text("Click to join the Spleef queue!", NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false)
+        ));
+        spleefMeta.getPersistentDataContainer().set(guiKey, PersistentDataType.STRING, "spleef");
+        spleef.setItemMeta(spleefMeta);
+        inv.setItem(4, spleef);
+
         // Spliff item in slot 6
         ItemStack spliff = new ItemStack(Material.SNOW_BLOCK);
         ItemMeta spliffMeta = spliff.getItemMeta();
@@ -112,6 +125,7 @@ public class MinigamesGUI implements Listener {
         switch (action) {
             case "duels" -> plugin.getDuelsManager().joinQueue(player);
             case "spliff" -> plugin.getSpliffManager().joinQueue(player);
+            case "spleef" -> plugin.getSpleefManager().joinQueue(player);
         }
     }
 }

@@ -7,7 +7,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -179,7 +181,7 @@ public class SpleefManager {
                 continue;
             }
             p.teleport(spawns.get(i % spawns.size()));
-            clearInventory(p);
+            giveKit(p);
         }
 
         plugin.getServer().broadcast(Component.text("[Spleef] Match starting in arena '" + arena.getName() + "' with " + arena.getMatchPlayers().size() + " players!", NamedTextColor.GREEN));
@@ -228,6 +230,11 @@ public class SpleefManager {
                 if (t != null) t.cancel();
                 return;
             }
+            // Elimination Y: one block below the arena floor so players who just break the
+            // last block under themselves have a moment to react before falling too far.
+            double arenaFloorY = arena.getPos1() != null
+                    ? Math.min(arena.getPos1().getBlockY(), arena.getPos2().getBlockY()) - 1
+                    : 0;
             List<UUID> toEliminate = new ArrayList<>();
             for (UUID uuid : new ArrayList<>(arena.getInMatch())) {
                 Player p = plugin.getServer().getPlayer(uuid);
@@ -235,9 +242,7 @@ public class SpleefManager {
                     toEliminate.add(uuid);
                     continue;
                 }
-                // Eliminated when falling below pos1 Y (the arena floor)
-                double loseY = arena.getPos1() != null ? Math.min(arena.getPos1().getBlockY(), arena.getPos2().getBlockY()) : 0;
-                if (p.getLocation().getY() < loseY) {
+                if (p.getLocation().getY() < arenaFloorY) {
                     toEliminate.add(uuid);
                     p.sendMessage(Component.text("You fell out of the arena!", NamedTextColor.RED));
                 }
@@ -349,11 +354,6 @@ public class SpleefManager {
         HubListener.giveOpenerItem(player);
     }
 
-    private void clearInventory(Player player) {
-        player.getInventory().clear();
-        player.getInventory().setArmorContents(new ItemStack[4]);
-    }
-
     private void broadcastToArenaQueue(SpleefArena arena, Component msg) {
         for (UUID uuid : arena.getQueue()) {
             Player p = plugin.getServer().getPlayer(uuid);
@@ -397,6 +397,29 @@ public class SpleefManager {
     }
 
     // ---- Helpers ----
+
+    /**
+     * Clear the player's inventory and give the Spleef kit:
+     * an Iron Shovel with Efficiency III in hotbar slot 0.
+     * The opener nether star is intentionally excluded — it will be
+     * restored by {@link com.wildrose.minigameswr.hub.HubListener#giveOpenerItem}
+     * when the player returns to the hub after the match.
+     */
+    private void giveKit(Player player) {
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(new ItemStack[4]);
+        ItemStack shovel = new ItemStack(Material.IRON_SHOVEL);
+        shovel.addUnsafeEnchantment(Enchantment.EFFICIENCY, 3);
+        player.getInventory().setItem(0, shovel);
+        player.setHealth(player.getMaxHealth());
+        player.setFoodLevel(20);
+        player.setSaturation(20f);
+    }
+
+    private void clearInventory(Player player) {
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(new ItemStack[4]);
+    }
 
     private File snapshotFile(String arenaName) {
         return new File(plugin.getDataFolder(), "snapshots" + File.separator + arenaName.toLowerCase() + ".snp");
