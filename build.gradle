@@ -17,6 +17,9 @@ repositories {
 }
 
 dependencies {
+    // Paper 1.21.1-R0.1-SNAPSHOT is the closest published snapshot for the 1.21.x line.
+    // Paper does not publish patch-level coordinates (e.g. 1.21.11); use this artifact
+    // for compilation and keep plugin.yml api-version set to '1.21' for runtime compatibility.
     compileOnly 'io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT'
 }
 
