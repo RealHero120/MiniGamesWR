@@ -25,6 +25,20 @@ duels:
     z: 0.5
     yaw: 270.0
     pitch: 0.0
+  # Kit given to each player at the start of a duel
+  kit:
+    helmet: IRON_HELMET
+    chestplate: IRON_CHESTPLATE
+    leggings: IRON_LEGGINGS
+    boots: IRON_BOOTS
+    # Hotbar/inventory items: key is the slot number (0-8 = hotbar)
+    items:
+      "0":
+        material: IRON_SWORD
+        amount: 1
+      "1":
+        material: COOKED_BEEF
+        amount: 16
 
 # Spliff arena configuration
 spliff:

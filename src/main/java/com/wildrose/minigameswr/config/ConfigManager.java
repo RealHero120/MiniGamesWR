@@ -3,11 +3,16 @@ package com.wildrose.minigameswr.config;
 import com.wildrose.minigameswr.MiniGamesWR;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConfigManager {
 
@@ -46,6 +51,36 @@ public class ConfigManager {
         String key = "duels.spawn" + which.toUpperCase();
         writeLocationWithSharedWorld(key, "duels.world", loc);
         plugin.saveConfig();
+    }
+
+    public ItemStack getDuelsKitArmorPiece(String slot, String defaultMaterial) {
+        String name = cfg().getString("duels.kit." + slot, defaultMaterial);
+        try {
+            return new ItemStack(Material.valueOf(name.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            return new ItemStack(Material.valueOf(defaultMaterial));
+        }
+    }
+
+    public Map<Integer, ItemStack> getDuelsKitItems() {
+        Map<Integer, ItemStack> items = new LinkedHashMap<>();
+        ConfigurationSection section = cfg().getConfigurationSection("duels.kit.items");
+        if (section == null) {
+            items.put(0, new ItemStack(Material.IRON_SWORD));
+            items.put(1, new ItemStack(Material.COOKED_BEEF, 16));
+            return items;
+        }
+        for (String key : section.getKeys(false)) {
+            try {
+                int slot = Integer.parseInt(key);
+                String materialName = section.getString(key + ".material", "AIR");
+                int amount = section.getInt(key + ".amount", 1);
+                items.put(slot, new ItemStack(Material.valueOf(materialName.toUpperCase()), amount));
+            } catch (IllegalArgumentException e) {
+                plugin.getLogger().warning("Invalid duels kit item at slot '" + key + "': " + e.getMessage());
+            }
+        }
+        return items;
     }
 
     // ---- Spliff ----

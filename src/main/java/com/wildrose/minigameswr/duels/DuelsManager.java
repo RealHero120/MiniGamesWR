@@ -1,12 +1,12 @@
 package com.wildrose.minigameswr.duels;
 
 import com.wildrose.minigameswr.MiniGamesWR;
+import com.wildrose.minigameswr.config.ConfigManager;
 import com.wildrose.minigameswr.hub.HubListener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -197,12 +197,14 @@ public class DuelsManager {
 
     private void giveKit(Player player) {
         clearInventory(player);
-        player.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
-        player.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-        player.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
-        player.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
-        player.getInventory().setItem(0, new ItemStack(Material.IRON_SWORD));
-        player.getInventory().setItem(1, new ItemStack(Material.COOKED_BEEF, 16));
+        ConfigManager cfg = plugin.getConfigManager();
+        player.getInventory().setHelmet(cfg.getDuelsKitArmorPiece("helmet", "IRON_HELMET"));
+        player.getInventory().setChestplate(cfg.getDuelsKitArmorPiece("chestplate", "IRON_CHESTPLATE"));
+        player.getInventory().setLeggings(cfg.getDuelsKitArmorPiece("leggings", "IRON_LEGGINGS"));
+        player.getInventory().setBoots(cfg.getDuelsKitArmorPiece("boots", "IRON_BOOTS"));
+        for (Map.Entry<Integer, ItemStack> entry : cfg.getDuelsKitItems().entrySet()) {
+            player.getInventory().setItem(entry.getKey(), entry.getValue());
+        }
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
         player.setSaturation(20f);
