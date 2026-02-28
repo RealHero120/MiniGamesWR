@@ -1,0 +1,17 @@
+name: MiniGamesWR
+version: '${version}'
+main: com.wildrose.minigameswr.MiniGamesWR
+api-version: '1.21'
+description: Wild Rose MC Minigames plugin (Duels & Spliff)
+authors: [WildRoseMC]
+
+commands:
+  mg:
+    description: MiniGamesWR admin command
+    usage: /mg <sethub|duel|spliff|reload>
+    permission: minigameswr.admin
+
+permissions:
+  minigameswr.admin:
+    description: Access to MiniGamesWR admin commands
+    default: op
